@@ -111,9 +111,12 @@ class css_attachimgs {
 			 
 					$(document).on('heartbeat-tick',function(e,data) {
 						//console.log(data);
-						if (!data['css-cpmb-attachimgs']) return;
+
+						if (typeof HBMonitor_time === 'function')
+							HBMonitor_time('AIMGS ');
+
+						if (!data['css-cpmb-attachimgs'] || "none" == data['css-cpmb-attachimgs']) return;
 						var imgs = eval(data['css-cpmb-attachimgs']);
-						//console.log(imgs);
 
 						var output = '';
 						if (imgs.length) {
