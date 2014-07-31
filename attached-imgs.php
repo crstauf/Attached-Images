@@ -112,10 +112,12 @@ class css_attachimgs {
 					$(document).on('heartbeat-tick',function(e,data) {
 						//console.log(data);
 
-						if (typeof HBMonitor_time === 'function')
-							HBMonitor_time('AIMGS ');
+						if (!data['css-cpmb-attachimgs'] || "none" == data['css-cpmb-attachimgs']) {
+							if (typeof HBMonitor_time === 'function')
+								HBMonitor_time('AIMGS (no imgs)');
+							return;
+						}
 
-						if (!data['css-cpmb-attachimgs'] || "none" == data['css-cpmb-attachimgs']) return;
 						var imgs = eval(data['css-cpmb-attachimgs']);
 
 						var output = '';
@@ -140,6 +142,9 @@ class css_attachimgs {
 								$("#insert-media-button").click();
 							});
 						}
+
+						if (typeof HBMonitor_time === 'function')
+							HBMonitor_time('AIMGS (' + imgs.length + ' imgs)');
 					});
 				}(jQuery));
 			</script>
