@@ -23,7 +23,6 @@ class css_attachimgs {
 
 	public static function enqueue_scripts($hook) {
 		if (!in_array($hook,array('post-new.php','post.php'))) return;
-		wp_enqueue_script('heartbeat');
 		wp_enqueue_script('attached-imgs',plugin_dir_url(__FILE__) . 'admin.js',array('jquery','heartbeat'));
 		wp_enqueue_style('attached-imgs',plugin_dir_url(__FILE__) . 'admin.css');
 	}
@@ -63,7 +62,7 @@ class css_attachimgs {
 					echo '<li><a href="' . $large[0] . '" target="_blank"><img src="' . $thumb[0] . '" alt="' . get_the_title() . '" width="' . $thumb[1] . '" height="' . $thumb[2] . '" /></a></li>';
 				}
 				//echo '<li class="viewall"><span>Add<br />Image(s)</span></li>';
-			}
+			} else echo '<li class="no-imgs"><h3 class="hndle">No Attached Images</h3></li>';
 			$post = $orig;
 			wp_reset_postdata();
 		echo '</ul><br style="clear: both;" />';
@@ -71,7 +70,7 @@ class css_attachimgs {
 
 		public static function num() {
 			if (self::$coords['num'] != (self::$imgs->current_post + 1)) return;
-			return '<li class="count"><span class="num-images"><span class="num">' . self::$imgs->found_posts . '</span><br />Images</abbr></span><span class="move">Move</span></li>';
+			return '<li class="count"><span class="num-images"><span class="num">' . self::$imgs->found_posts . '</span><br />Image' . (1 == self::$imgs->found_posts ? '' : 's') . '</abbr></span><span class="move">Move</span></li>';
 		}
 
 		public static function all() {
@@ -89,18 +88,6 @@ class css_attachimgs {
 			<script>
 				(function($){
 
-					$.QueryString = (function(a) {
-						if (a == "") return {};
-						var b = {};
-						for (var i = 0; i < a.length; ++i)
-						{
-							var p=a[i].split('=');
-							if (p.length != 2) continue;
-							b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
-						}
-						return b;
-					})(window.location.search.substr(1).split('&'));
-
 					//wp.heartbeat.interval('fast');
 			 
 					$(document).on('heartbeat-send',function(e,data) {
@@ -113,8 +100,13 @@ class css_attachimgs {
 						//console.log(data);
 
 						if (!data['css-cpmb-attachimgs'] || "none" == data['css-cpmb-attachimgs']) {
+							$("#cpmb-attachimgs > h3.hndle").hide();
+							if (!$("#cpmb-attachimgs div.inside > ul > li.no-imgs").length)
+								$("#cpmb-attachimgs div.inside > ul").html('<li class="no-imgs"><h3 class="hndle">No Attached Images</h3></li>');
+
 							if (typeof HBMonitor_time === 'function')
 								HBMonitor_time('AIMGS (no imgs)');
+
 							return;
 						}
 
@@ -122,13 +114,14 @@ class css_attachimgs {
 
 						var output = '';
 						if (imgs.length) {
+							$("#cpmb-attachimgs > h3.hndle").show();
 							imgs.forEach(function(li) {
 								output += li;
 								//output += '<li><a href="' + sizes[1] + '" target="_blank"><img src="' + sizes[0] + '" width="150" height="150" alt="" /></a></li>';
 							});
 							$("#cpmb-attachimgs div.inside > ul").html(output);
 
-							$("#cpmb-attachimgs li:not(.count,.viewall)").on('mouseover',function() {
+							$("#cpmb-attachimgs li:not(.count,.viewall,.no-imgs)").on('mouseover',function() {
 								$(this).stop(true).animate({opacity: 0.7},200);
 							}).on('mouseout',function() {
 								$(this).stop(true).animate({opacity: 1},200);
@@ -141,6 +134,9 @@ class css_attachimgs {
 							}).on('click',function() {
 								$("#insert-media-button").click();
 							});
+						} else {
+							$("#cpmb-attachimgs > h3.hndle").hide();
+							$("#cpmb-attachimgs div.inside > ul").html('<li class="no-imgs"><h3 class="hndle">No Attached Images</h3></li>');
 						}
 
 						if (typeof HBMonitor_time === 'function')
