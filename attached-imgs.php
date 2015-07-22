@@ -90,13 +90,13 @@ class css_attachimgs {
 				(function($){
 
 					//wp.heartbeat.interval('fast');
-			 
+
 					$(document).on('heartbeat-send',function(e,data) {
 						var post_id = $.QueryString['post'];
 						data['postid_heartbeat'] = post_id;
 						//console.log(data);
 					});
-			 
+
 					$(document).on('heartbeat-tick',function(e,data) {
 						//console.log(data);
 
@@ -168,7 +168,7 @@ class css_attachimgs {
 				'orderby' => 'menu_order',
 				'order' => 'asc'
 			);
-		 
+
 			$images = new WP_Query($query);
 
 			if (!$images->have_posts()) {
@@ -199,7 +199,7 @@ class css_attachimgs {
 			wp_reset_postdata();
 
 			$response['css-cpmb-attachimgs'] = json_encode($return);
-		 
+
 			return $response;
 		}
 
