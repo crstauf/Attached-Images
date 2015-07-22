@@ -33,6 +33,7 @@ class css_attachimgs {
 
 		$query = array(
 			'post_type' => 'attachment',
+			'post_mime_type' => 'image',
 			'post_status' => 'any',
 			'post_parent' => $post->ID,
 			'posts_per_page' => -1,
@@ -160,6 +161,7 @@ class css_attachimgs {
 
 			$query = array(
 				'post_type' => 'attachment',
+				'post_mime_type' => 'image',
 				'post_status' => 'any',
 				'posts_per_page' => -1,
 				'post_parent' => $post_id,
