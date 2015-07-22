@@ -134,12 +134,6 @@ class css_attachimgs {
                             $("#cpmb-attachimgs > h3.hndle").attr('data-cols',cols).show();
 							$("#cpmb-attachimgs div.inside > ul").attr('data-cols',cols).html(output);
 
-							$("#cpmb-attachimgs li:not(.count,.viewall,.no-imgs)").on('mouseover',function() {
-								$(this).stop(true).animate({opacity: 0.7},200);
-							}).on('mouseout',function() {
-								$(this).stop(true).animate({opacity: 1},200);
-							});
-
 							$("#cpmb-attachimgs li.viewall").on('mouseover',function() {
 								$(this).animate({color: 'red'},200);
 							}).on('mouseout',function() {
