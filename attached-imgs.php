@@ -53,7 +53,13 @@ class css_attachimgs {
 		global $post;
 		$orig = $post;
 
-		echo '<ul>';
+        $num = self::$imgs->found_posts;
+        if (4 > $num) $cols = 2;
+        else if (3 < $num && 9 > $num) $cols = 3;
+        else if (16 > $num) $cols = 4;
+        else if (16 <= $num) $cols = 5;
+
+		echo '<ul data-cols="' . $cols . '">';
 			if (false !== self::$imgs && self::$imgs->have_posts()) {
 				while (self::$imgs->have_posts()) {
 					self::$imgs->the_post();
@@ -66,12 +72,12 @@ class css_attachimgs {
 			} else echo '<li class="no-imgs"><h3 class="hndle">No Attached Images</h3></li>';
 			$post = $orig;
 			wp_reset_postdata();
-		echo '</ul><br style="clear: both;" />';
+		echo '</ul><style type="text/css">#cpmb-attachimgs > h3.hndle { width: ' . (100 / $cols) . '%; }</style><br style="clear: both;" />';
 	}
 
 		public static function num() {
 			if (self::$coords['num'] != (self::$imgs->current_post + 1)) return;
-			return '<li class="count"><span class="num-images"><span class="num">' . self::$imgs->found_posts . '</span><br />Image' . (1 == self::$imgs->found_posts ? '' : 's') . '</abbr></span><span class="move">Move</span></li>';
+			return '<li class="count"><span><span><span class="num-images"><span class="num">' . self::$imgs->found_posts . '</span><br />Image' . (1 == self::$imgs->found_posts ? '' : 's') . '</abbr></span><span class="move">Move</span></span></span></li>';
 		}
 
 		public static function all() {
@@ -115,12 +121,18 @@ class css_attachimgs {
 
 						var output = '';
 						if (imgs.length) {
-							$("#cpmb-attachimgs > h3.hndle").show();
 							imgs.forEach(function(li) {
 								output += li;
 								//output += '<li><a href="' + sizes[1] + '" target="_blank"><img src="' + sizes[0] + '" width="150" height="150" alt="" /></a></li>';
 							});
-							$("#cpmb-attachimgs div.inside > ul").html(output);
+                            var img_count = imgs.length - 1;
+                            var cols = 2;
+                            if (4 > img_count) cols = 2;
+                            else if (3 < img_count && 9 > img_count) cols = 3;
+                            else if (16 > img_count) cols = 4;
+                            else if (16 <= img_count) cols = 5;
+                            $("#cpmb-attachimgs > h3.hndle").attr('data-cols',cols).show();
+							$("#cpmb-attachimgs div.inside > ul").attr('data-cols',cols).html(output);
 
 							$("#cpmb-attachimgs li:not(.count,.viewall,.no-imgs)").on('mouseover',function() {
 								$(this).stop(true).animate({opacity: 0.7},200);
@@ -141,7 +153,7 @@ class css_attachimgs {
 						}
 
 						if (typeof HBMonitor_time === 'function')
-							HBMonitor_time('AIMGS (' + imgs.length + ' imgs)');
+							HBMonitor_time('AIMGS (' + (imgs.length - 1) + ' imgs)');
 					});
 				}(jQuery));
 			</script>
