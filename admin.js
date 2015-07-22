@@ -21,12 +21,6 @@ jQuery(function($) {
 		$(this).find('li.count').removeClass('move');
 	});
 
-	$("#cpmb-attachimgs li:not(.count,.viewall,.no-imgs)").on('mouseover',function() {
-		$(this).stop(true).animate({opacity: 0.7},200);
-	}).on('mouseout',function() {
-		$(this).stop(true).animate({opacity: 1},200);
-	});
-
 	$("#cpmb-attachimgs li.viewall").on('mouseover',function() {
 		$(this).animate({color: 'red'},200);
 	}).on('mouseout',function() {

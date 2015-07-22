@@ -279,3 +279,4 @@
 	height: 100%;
 }
 
+	#cpmb-attachimgs > div.inside > ul > li > a:hover > img { opacity: 0.7; }
