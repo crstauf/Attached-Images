@@ -69,10 +69,10 @@ class css_attachimgs {
 					echo '<li><a href="' . $large[0] . '" target="_blank"><img src="' . $thumb[0] . '" alt="' . get_the_title() . '" width="' . $thumb[1] . '" height="' . $thumb[2] . '" /></a></li>';
 				}
 				//echo '<li class="viewall"><span>Add<br />Image(s)</span></li>';
-			} else echo '<li class="no-imgs"><h3 class="hndle">No Attached Images</h3></li>';
+			} else echo '<li class="no-imgs"><h2 class="hndle">No Attached Images</h2></li>';
 			$post = $orig;
 			wp_reset_postdata();
-		echo '</ul><style type="text/css">#cpmb-attachimgs > h3.hndle { width: ' . (100 / $cols) . '%; }</style><br style="clear: both;" />';
+		echo '</ul><style type="text/css">#cpmb-attachimgs > h2.hndle { width: ' . (100 / $cols) . '%; }</style><br style="clear: both;" />';
 	}
 
 		public static function num() {
@@ -107,9 +107,9 @@ class css_attachimgs {
 						//console.log(data);
 
 						if (!data['css-cpmb-attachimgs'] || "none" == data['css-cpmb-attachimgs']) {
-							$("#cpmb-attachimgs > h3.hndle").hide();
+							$("#cpmb-attachimgs > .hndle").hide();
 							if (!$("#cpmb-attachimgs div.inside > ul > li.no-imgs").length)
-								$("#cpmb-attachimgs div.inside > ul").html('<li class="no-imgs"><h3 class="hndle">No Attached Images</h3></li>');
+								$("#cpmb-attachimgs div.inside > ul").html('<li class="no-imgs"><h2 class="hndle">No Attached Images</h2></li>');
 
 							if (typeof HBMonitor_time === 'function')
 								HBMonitor_time('AIMGS (no imgs)');
@@ -131,7 +131,7 @@ class css_attachimgs {
                             else if (3 < img_count && 9 > img_count) cols = 3;
                             else if (16 > img_count) cols = 4;
                             else if (16 <= img_count) cols = 5;
-                            $("#cpmb-attachimgs > h3.hndle").attr('data-cols',cols).show();
+                            $("#cpmb-attachimgs > .hndle").attr('data-cols',cols).show();
 							$("#cpmb-attachimgs div.inside > ul").attr('data-cols',cols).html(output);
 
 							$("#cpmb-attachimgs li.viewall").on('mouseover',function() {
@@ -142,8 +142,8 @@ class css_attachimgs {
 								$("#insert-media-button").click();
 							});
 						} else {
-							$("#cpmb-attachimgs > h3.hndle").hide();
-							$("#cpmb-attachimgs div.inside > ul").html('<li class="no-imgs"><h3 class="hndle">No Attached Images</h3></li>');
+							$("#cpmb-attachimgs > .hndle").hide();
+							$("#cpmb-attachimgs div.inside > ul").html('<li class="no-imgs"><h2 class="hndle">No Attached Images</h2></li>');
 						}
 
 						if (typeof HBMonitor_time === 'function')

@@ -14,7 +14,7 @@ jQuery(function($) {
 
 	$("#cpmb-attachimgs").ready(function() {
 		if ($(this).find('li.no-imgs').length)
-			$("#cpmb-attachimgs > h3.hndle").hide();
+			$("#cpmb-attachimgs > .hndle").hide();
 	}).on('mouseover',function() {
 		$(this).find('li.count').addClass('move');
 	}).on('mouseout',function() {
@@ -29,6 +29,6 @@ jQuery(function($) {
 		$("#insert-media-button").click();
 	});
 
-	$("#cpmb-attachimgs li.no-imgs > h3.hndle").click(function(ev) { ev.preventDefault(); });
+	$("#cpmb-attachimgs li.no-imgs > .hndle").click(function(ev) { ev.preventDefault(); });
 
 });

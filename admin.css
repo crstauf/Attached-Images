@@ -14,7 +14,7 @@
 		border: 1px solid #e5e5e5;
 	}
 
-#cpmb-attachimgs > h3.hndle {
+#cpmb-attachimgs > .hndle {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -28,11 +28,11 @@
 	border: none;
 }
 
-	#cpmb-attachimgs > h3.hndle[data-cols="3"] { width: 33%; }
-	#cpmb-attachimgs > h3.hndle[data-cols="4"] { width: 25%; }
-	#cpmb-attachimgs > h3.hndle[data-cols="5"] { width: 20%; }
+	#cpmb-attachimgs > .hndle[data-cols="3"] { width: 33%; }
+	#cpmb-attachimgs > .hndle[data-cols="4"] { width: 25%; }
+	#cpmb-attachimgs > .hndle[data-cols="5"] { width: 20%; }
 
-	#cpmb-attachimgs.closed > h3.hndle {
+	#cpmb-attachimgs.closed > .hndle {
 		position: static;
 		right: auto;
 		top: auto;
@@ -42,7 +42,7 @@
 		text-indent: 0;
 	}
 
-#cpmb-attachimgs > h3.hndle > span {
+#cpmb-attachimgs > .hndle > span {
 	float: left;
 	display: inline;
 	width: 100%;
@@ -50,16 +50,16 @@
 	padding-top: 100%;
 }
 
-	#cpmb-attachimgs.closed > h3.hndle > span {
+	#cpmb-attachimgs.closed > .hndle > span {
 		float: none;
 		width: auto;
 		height: auto;
 		padding-top: 0;
 	}
 
-#cpmb-attachimgs > div.handlediv { display: none; }
+#cpmb-attachimgs > .handlediv { display: none; }
 
-	#cpmb-attachimgs.closed > div.handlediv { display: block; }
+	#cpmb-attachimgs.closed > .handlediv { display: block; }
 
 #cpmb-attachimgs > div.inside {
 	position: relative;
