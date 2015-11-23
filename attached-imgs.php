@@ -69,10 +69,13 @@ class css_attachimgs {
 					echo '<li><a href="' . $large[0] . '" target="_blank"><img src="' . $thumb[0] . '" alt="' . get_the_title() . '" width="' . $thumb[1] . '" height="' . $thumb[2] . '" /></a></li>';
 				}
 				//echo '<li class="viewall"><span>Add<br />Image(s)</span></li>';
-			} else echo '<li class="no-imgs"><h2 class="hndle">No Attached Images</h2></li>';
+			} else {
+                $headtag = version_compare($wp_version,'4.3','>') ? 'h2 style="font-weight: bold;"' : 'h3';
+                echo '<li class="no-imgs"><' . $headtag . ' class="hndle">No Attached Images</' . $headtag . '></li>';
+            }
 			$post = $orig;
 			wp_reset_postdata();
-		echo '</ul><style type="text/css">#cpmb-attachimgs > h2.hndle { width: ' . (100 / $cols) . '%; }</style><br style="clear: both;" />';
+		echo '</ul><style type="text/css">#cpmb-attachimgs > .hndle { width: ' . (100 / $cols) . '%; }</style><br style="clear: both;" />';
 	}
 
 		public static function num() {
