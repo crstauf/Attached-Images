@@ -50,7 +50,7 @@ class css_attachimgs {
 	}
 
 	public static function the_box($post) {
-		global $post;
+		global $wp_version;
 		$orig = $post;
 
         $num = self::$imgs->found_posts;
