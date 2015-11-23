@@ -75,7 +75,7 @@ class css_attachimgs {
             }
 			$post = $orig;
 			wp_reset_postdata();
-		echo '</ul><style type="text/css">#cpmb-attachimgs > .hndle { width: ' . (100 / $cols) . '%; }</style><br style="clear: both;" />';
+		echo '</ul><style type="text/css">#cpmb-attachimgs > .hndle { width: ' . (100 / $cols) . '%; }</style>';
 	}
 
 		public static function num() {
