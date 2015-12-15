@@ -61,20 +61,16 @@ class css_attachimgs {
 
 		echo '<ul data-cols="' . $cols . '">';
 			if (false !== self::$imgs && self::$imgs->have_posts()) {
-				while (self::$imgs->have_posts()) {
-					self::$imgs->the_post();
+				foreach (self::$imgs->posts as $img) {
 					echo self::num();
-					$thumb = wp_get_attachment_image_src(get_the_ID(),'thumbnail');
-					$large = wp_get_attachment_image_src(get_the_ID(),'large');
-					echo '<li><a href="' . $large[0] . '" target="_blank"><img src="' . $thumb[0] . '" alt="' . get_the_title() . '" width="' . $thumb[1] . '" height="' . $thumb[2] . '" /></a></li>';
+					$thumb = wp_get_attachment_image_src($img->ID,'thumbnail');
+					$large = wp_get_attachment_image_src($img->ID,'large');
+					echo '<li><a href="' . $large[0] . '" target="_blank"><img src="' . $thumb[0] . '" alt="' . get_the_title($img->ID) . '" width="' . $thumb[1] . '" height="' . $thumb[2] . '" /></a></li>';
 				}
-				//echo '<li class="viewall"><span>Add<br />Image(s)</span></li>';
 			} else {
                 $headtag = version_compare($wp_version,'4.4-alpha','>=') ? 'h2 style="font-weight: bold;"' : 'h3';
                 echo '<li class="no-imgs"><' . $headtag . ' class="hndle">No Attached Images</' . $headtag . '></li>';
             }
-			$post = $orig;
-			wp_reset_postdata();
 		echo '</ul><style type="text/css">#cpmb-attachimgs > .hndle { width: ' . (100 / $cols) . '%; }</style>';
 	}
 
