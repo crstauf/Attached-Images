@@ -61,8 +61,8 @@ class css_attachimgs {
 
 		echo '<ul data-cols="' . $cols . '">';
 			if (false !== self::$imgs && self::$imgs->have_posts()) {
+                echo self::num();
 				foreach (self::$imgs->posts as $img) {
-					echo self::num();
 					$thumb = wp_get_attachment_image_src($img->ID,'thumbnail');
 					$large = wp_get_attachment_image_src($img->ID,'large');
 					echo '<li><a href="' . $large[0] . '" target="_blank"><img src="' . $thumb[0] . '" alt="' . get_the_title($img->ID) . '" width="' . $thumb[1] . '" height="' . $thumb[2] . '" /></a></li>';
@@ -75,7 +75,6 @@ class css_attachimgs {
 	}
 
 		public static function num() {
-			if (self::$coords['num'] != (self::$imgs->current_post + 1)) return;
 			return '<li class="count"><span><span><span class="num-images"><span class="num">' . self::$imgs->found_posts . '</span><br />Image' . (1 == self::$imgs->found_posts ? '' : 's') . '</abbr></span><span class="move">Move</span></span></span></li>';
 		}
 
