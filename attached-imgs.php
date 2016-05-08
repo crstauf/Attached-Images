@@ -7,6 +7,12 @@ Version: 0.0.1
 Author: Caleb Stauffer
 */
 
+if (!defined('ABSPATH') || !function_exists('add_filter')) {
+	header( 'Status: 403 Forbidden' );
+	header( 'HTTP/1.1 403 Forbidden' );
+	exit();
+}
+
 add_action('admin_init',array('css_attachimgs','hooks'));
 
 class css_attachimgs {
