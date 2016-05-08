@@ -190,13 +190,9 @@ class css_attachimgs {
 
 			$responses['css-cpmb-attachimgs'] = 'has-images';
 
-			$return = array();
+			$return = array(self::num());
 			while ($images->have_posts()) {
 				$images->the_post();
-				if (null != ($temp = self::num())) {
-					$return[] = $temp;
-					unset($temp);
-				}
 				$thumb = wp_get_attachment_image_src(get_the_ID(),'thumbnail');
 				$large = wp_get_attachment_image_src(get_the_ID(),'large');
 				$return[] = '<li><a href="' . $large[0] . '" target="_blank"><img src="' . $thumb[0] . '" alt="' . get_the_title() . '" width="' . $thumb[1] . '" height="' . $thumb[2] . '" /></a></li>';
