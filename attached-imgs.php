@@ -115,8 +115,8 @@ class css_attachimgs {
 							if (!$("#cpmb-attachimgs div.inside > ul > li.no-imgs").length)
 								$("#cpmb-attachimgs div.inside > ul").html('<li class="no-imgs"><h2 class="hndle">No Attached Images</h2></li>');
 
-							if (typeof HBMonitor_time === 'function')
-								HBMonitor_time('AIMGS (no imgs)');
+							if ('function' === typeof HBMonitor)
+								HBMonitor('AIMGS (no imgs)');
 
 							return;
 						}
@@ -150,8 +150,8 @@ class css_attachimgs {
 							$("#cpmb-attachimgs div.inside > ul").html('<li class="no-imgs"><h2 class="hndle">No Attached Images</h2></li>');
 						}
 
-						if (typeof HBMonitor_time === 'function')
-							HBMonitor_time('AIMGS (' + (imgs.length - 1) + ' imgs)');
+						if ('function' === typeof HBMonitor)
+							HBMonitor('AIMGS (' + (imgs.length - 1) + ' imgs)');
 					});
 				}(jQuery));
 			</script>
