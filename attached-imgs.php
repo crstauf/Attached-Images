@@ -99,16 +99,12 @@ class css_attachimgs {
 			<script>
 				(function($){
 
-					//wp.heartbeat.interval('fast');
-
 					$(document).on('heartbeat-send',function(e,data) {
 						var post_id = $.QueryString['post'];
 						data['postid_heartbeat'] = post_id;
-						//console.log(data);
 					});
 
 					$(document).on('heartbeat-tick',function(e,data) {
-						//console.log(data);
 
 						if (!data['css-cpmb-attachimgs'] || "none" == data['css-cpmb-attachimgs']) {
 							$("#cpmb-attachimgs > .hndle").hide();
@@ -127,7 +123,6 @@ class css_attachimgs {
 						if (imgs.length) {
 							imgs.forEach(function(li) {
 								output += li;
-								//output += '<li><a href="' + sizes[1] + '" target="_blank"><img src="' + sizes[0] + '" width="150" height="150" alt="" /></a></li>';
 							});
                             var img_count = imgs.length - 1;
                             var cols = 2;
@@ -201,7 +196,6 @@ class css_attachimgs {
 					unset($temp);
 				}
 			}
-			//$return[] = '<li class="viewall"><span>Add<br />Image(s)</span></li>';
 			wp_reset_postdata();
 
 			$response['css-cpmb-attachimgs'] = json_encode($return);
