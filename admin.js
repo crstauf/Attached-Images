@@ -16,7 +16,7 @@ jQuery(function($) {
 		if ($(this).find('li.no-imgs').length)
 			$("#cpmb-attachimgs > .hndle").hide();
 	}).on('mouseover',function() {
-		$(this).find('li.count').addClass('move');
+		$(this).not('.refreshing').find('li.count').addClass('move');
 	}).on('mouseout',function() {
 		$(this).find('li.count').removeClass('move');
 	});

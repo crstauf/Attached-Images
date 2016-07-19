@@ -14,6 +14,8 @@
 		border: 1px solid #e5e5e5;
 	}
 
+#cpmb-attachimgs .spinner { margin-top: 0; }
+
 #cpmb-attachimgs > .hndle {
 	position: absolute;
 	left: 0;
@@ -208,7 +210,15 @@
 	text-align: left;
 }
 
-	#cpmb-attachimgs > div.inside > ul > li.count span.move { display: none; }
+	#cpmb-attachimgs > div.inside > ul > li.count span.spinner {
+		position: absolute;
+		left: 5px;
+		top: 5px;
+		margin: 0;
+	}
+
+	#cpmb-attachimgs > div.inside > ul > li.count span.move,
+	#cpmb-attachimgs.refreshing > div.inside > ul > li.count span.move { display: none; }
 
 		@media screen and (min-width: 851px) {
 			#cpmb-attachimgs > div.inside > ul > li.count.move span.num-images { display: none; }

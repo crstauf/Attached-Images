@@ -78,7 +78,7 @@ class css_attachimgs {
 			}
 		}
 
-		add_meta_box('cpmb-attachimgs',(true === self::$attachment ? 'Image Sizes' : 'Attached Images'),array(__CLASS__,'the_box'),'','side');
+		add_meta_box('cpmb-attachimgs',(true === self::$attachment ? 'Image Sizes' : 'Attached Images') . '<span class="spinner"></span>',array(__CLASS__,'the_box'),'','side');
 	}
 
 	public static function the_box($post) {
@@ -119,7 +119,18 @@ class css_attachimgs {
 	}
 
 		public static function num() {
-			return '<li class="count"><span><span><span class="num-images"><span class="num">' . count(self::$imgs) . '</span><br />' . (true === self::$attachment ? 'Size' : 'Image') . (1 == count(self::$imgs) ? '' : 's') . '</abbr></span><span class="move">Move</span></span></span></li>';
+			return '<li class="count">' .
+				'<span>' .
+					'<span>' .
+						'<span class="num-images">' .
+							'<span class="num">' . count(self::$imgs) . '</span><br />' .
+							(true === self::$attachment ? 'Size' : 'Image') . (1 == count(self::$imgs) ? '' : 's') .
+						'</span>' .
+						'<span class="move">Move</span>' .
+						'<span class="spinner"></span>' .
+					'</span>' .
+				'</span>' .
+			'</li>';
 		}
 
 		public static function heartbeat_footer_js() {
@@ -129,16 +140,22 @@ class css_attachimgs {
 				(function($){
 
 					$(document).on('heartbeat-send',function(e,data) {
+						$("#cpmb-attachimgs").addClass('refreshing');
+						$("#cpmb-attachimgs .spinner").addClass('is-active');
 						var post_id = $.QueryString['post'];
 						data['postid_heartbeat'] = post_id;
 					});
 
 					$(document).on('heartbeat-tick',function(e,data) {
 
+						$("#cpmb-attachimgs.refreshing").removeClass('refreshing');
+						$("#cpmb-attachimgs .spinner.is-active").removeClass('is-active');
+
 						if (!data['css-cpmb-attachimgs'] || "none" == data['css-cpmb-attachimgs']) {
 							$("#cpmb-attachimgs > .hndle").hide();
+
 							if (!$("#cpmb-attachimgs div.inside > ul > li.no-imgs").length)
-								$("#cpmb-attachimgs div.inside > ul").html('<li class="no-imgs"><h2 class="hndle">No Attached Images</h2></li>');
+								$("#cpmb-attachimgs div.inside > ul").html('<li class="no-imgs"><h2 class="hndle">No Attached Images<span class="spinner"></span></h2></li>');
 
 							if ('function' === typeof HBMonitor)
 								HBMonitor('No Attached Images');
@@ -163,7 +180,7 @@ class css_attachimgs {
 							$("#cpmb-attachimgs div.inside > ul").attr('data-cols',cols).html(output);
 						} else {
 							$("#cpmb-attachimgs > .hndle").hide();
-							$("#cpmb-attachimgs div.inside > ul").html('<li class="no-imgs"><h2 class="hndle">No Attached Images</h2></li>');
+							$("#cpmb-attachimgs div.inside > ul").html('<li class="no-imgs"><h2 class="hndle">No Attached Images<span class="spinner"></span></h2></li>');
 						}
 
 						if ('function' === typeof HBMonitor)
