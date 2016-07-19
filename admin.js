@@ -21,14 +21,6 @@ jQuery(function($) {
 		$(this).find('li.count').removeClass('move');
 	});
 
-	$("#cpmb-attachimgs li.viewall").on('mouseover',function() {
-		$(this).animate({color: 'red'},200);
-	}).on('mouseout',function() {
-		$(this).animate({color: '#666'},200);
-	}).on('click',function() {
-		$("#insert-media-button").click();
-	});
-
 	$("#cpmb-attachimgs li.no-imgs > .hndle").click(function(ev) { ev.preventDefault(); });
 
 });

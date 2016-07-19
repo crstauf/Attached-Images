@@ -161,14 +161,6 @@ class css_attachimgs {
                             else if (16 <= img_count) cols = 5;
                             $("#cpmb-attachimgs > .hndle").attr('data-cols',cols).show();
 							$("#cpmb-attachimgs div.inside > ul").attr('data-cols',cols).html(output);
-
-							$("#cpmb-attachimgs li.viewall").on('mouseover',function() {
-								$(this).animate({color: 'red'},200);
-							}).on('mouseout',function() {
-								$(this).animate({color: '#666'},200);
-							}).on('click',function() {
-								$("#insert-media-button").click();
-							});
 						} else {
 							$("#cpmb-attachimgs > .hndle").hide();
 							$("#cpmb-attachimgs div.inside > ul").html('<li class="no-imgs"><h2 class="hndle">No Attached Images</h2></li>');
