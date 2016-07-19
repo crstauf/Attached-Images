@@ -189,8 +189,7 @@ class css_attachimgs {
 			while ($images->have_posts()) {
 				$images->the_post();
 				$thumb = wp_get_attachment_image_src(get_the_ID(),'thumbnail');
-				$large = wp_get_attachment_image_src(get_the_ID(),'large');
-				$return[] = '<li><a href="' . $large[0] . '" target="_blank"><img src="' . $thumb[0] . '" alt="' . get_the_title() . '" width="' . $thumb[1] . '" height="' . $thumb[2] . '" /></a></li>';
+				$return[] = '<li><a href="' . get_edit_post_link(get_the_ID()) . '" target="_blank"><img src="' . $thumb[0] . '" alt="' . get_the_title() . '" width="' . $thumb[1] . '" height="' . $thumb[2] . '" /></a></li>';
 				if (0 && null != ($temp = self::all())) {
 					$return[] = $temp;
 					unset($temp);
