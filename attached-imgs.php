@@ -52,7 +52,8 @@ class css_attachimgs {
 
 		self::$coords['all'] = self::$imgs->found_posts;
 
-		add_meta_box('cpmb-attachimgs','Attached Images',array(__CLASS__,'the_box'),'','side');
+		if ('attachment' !== get_post_type($post))
+			add_meta_box('cpmb-attachimgs','Attached Images',array(__CLASS__,'the_box'),'','side');
 	}
 
 	public static function the_box($post) {
