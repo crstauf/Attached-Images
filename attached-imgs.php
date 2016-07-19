@@ -20,6 +20,8 @@ class css_attachimgs {
     public static $imgs = false;
 	public static $coords = array('num' => 1,'all' => 7);
 
+	private static $attachment = false;
+
     public static function hooks() {
         add_action('admin_enqueue_scripts',array(__CLASS__,'enqueue_scripts'));
 		add_action('add_meta_boxes',array(__CLASS__,'add_the_box'));
@@ -29,49 +31,85 @@ class css_attachimgs {
 
 	public static function enqueue_scripts($hook) {
 		if (!in_array($hook,array('post-new.php','post.php'))) return;
-		wp_enqueue_script('attached-imgs',plugin_dir_url(__FILE__) . 'admin.js',array('jquery','heartbeat'));
-		wp_enqueue_style('attached-imgs',plugin_dir_url(__FILE__) . 'admin.css');
+		wp_enqueue_script('attached-imgs',plugin_dir_url(__FILE__) . 'admin.js',array('jquery','heartbeat'),'init');
+		wp_enqueue_style('attached-imgs',plugin_dir_url(__FILE__) . 'admin.css','','init');
 	}
 
 	public static function add_the_box() {
 		global $post;
 		if (!is_object($post)) return;
 
-		$query = array(
-			'post_type' => 'attachment',
-			'post_mime_type' => 'image',
-			'post_status' => 'any',
-			'post_parent' => $post->ID,
-			'posts_per_page' => -1,
-			'orderby' => 'menu_order',
-			'order' => 'asc',
-		);
+		if ('attachment' === get_post_type($post)) {
+			self::$attachment = true;
+			$metadata = wp_get_attachment_metadata($post->ID);
+			if (array_key_exists('sizes',$metadata) && is_array($metadata['sizes']) && count($metadata['sizes'])) {
+				self::$imgs = array();
+				foreach ($metadata['sizes'] as $size => $array) {
+					$image = new stdClass();
+					$image->width = $array['width'];
+					$image->height = $array['height'];
+					$image->size = $size;
+					$temp = wp_get_attachment_image_src($post->ID,$size);
+					$image->src = $temp[0];
+					self::$imgs[] = $image;
+				}
+			}
+		} else {
+			$images = new WP_Query(array(
+				'post_type' => 'attachment',
+				'post_mime_type' => 'image',
+				'post_status' => 'any',
+				'post_parent' => $post->ID,
+				'posts_per_page' => -1,
+				'orderby' => 'menu_order',
+				'order' => 'asc',
+			));
+			if ($images->have_posts()) {
+				foreach ($images->posts as $img) {
+					$temp = wp_get_attachment_image_src($img->ID,'thumbnail');
+					$image = new stdClass();
+					$image->width = $temp[1];
+					$image->height = $temp[2];
+					$image->src = $temp[0];
+					$image->id = $img->ID;
+					self::$imgs[] = $image;
+				}
+				self::$coords['all'] = $images->found_posts;
+			}
+		}
 
-		$images = new WP_Query($query);
-		self::$imgs = $images;
-
-		self::$coords['all'] = self::$imgs->found_posts;
-
-		add_meta_box('cpmb-attachimgs','Attached Images',array(__CLASS__,'the_box'),'','side');
+		add_meta_box('cpmb-attachimgs',(true === self::$attachment ? 'Image Sizes' : 'Attached Images'),array(__CLASS__,'the_box'),'','side');
 	}
 
 	public static function the_box($post) {
 		global $wp_version;
 		$orig = $post;
 
-        $num = self::$imgs->found_posts;
+        $num = count(self::$imgs);
+
         if (4 > $num) $cols = 2;
         else if (3 < $num && 9 > $num) $cols = 3;
         else if (16 > $num) $cols = 4;
         else if (16 <= $num) $cols = 5;
 
-		echo '<ul data-cols="' . $cols . '">';
-			if (false !== self::$imgs && self::$imgs->have_posts()) {
+		echo '<ul data-cols="' . $cols . '" data-posttype="' . get_post_type($post) . '">';
+			if (is_array(self::$imgs) && count(self::$imgs)) {
                 echo self::num();
-				foreach (self::$imgs->posts as $img) {
-					$thumb = wp_get_attachment_image_src($img->ID,'thumbnail');
-					$large = wp_get_attachment_image_src($img->ID,'large');
-					echo '<li><a href="' . $large[0] . '" target="_blank"><img src="' . $thumb[0] . '" alt="' . get_the_title($img->ID) . '" width="' . $thumb[1] . '" height="' . $thumb[2] . '" /></a></li>';
+				$image_id = $post->ID;
+				foreach (self::$imgs as $img) {
+					if (isset($img->id)) {
+						$image_id = $img->id;
+						$image_link = get_edit_post_link($img->id);
+					}
+					else if (isset($img->size)) {
+						$image = wp_get_attachment_image_src($post->ID,$img->size);
+						$image_link = $image[0];
+					}
+					echo '<li data-orientation="' . ($img->width >= $img->height ? 'landscape' : 'portrait') . '">' .
+						'<a href="' . $image_link . '" target="_blank">' .
+							'<img src="' . $img->src . '" alt="' . get_the_title($image_id) . '" width="' . $img->width . '" height="' . $img->height . '" />' .
+						'</a>' .
+					'</li>';
 				}
 			} else {
                 $headtag = version_compare($wp_version,'4.4-alpha','>=') ? 'h2 style="font-weight: bold;"' : 'h3';
@@ -81,16 +119,7 @@ class css_attachimgs {
 	}
 
 		public static function num() {
-			return '<li class="count"><span><span><span class="num-images"><span class="num">' . self::$imgs->found_posts . '</span><br />Image' . (1 == self::$imgs->found_posts ? '' : 's') . '</abbr></span><span class="move">Move</span></span></span></li>';
-		}
-
-		public static function all() {
-			if (self::$coords['all'] != (self::$imgs->current_post + 1)) return;
-
-			$text = 'Add<br />Image(s)';
-			if (self::$imgs->found_posts > 10) $text = 'Add &amp;<br />View All<br />Images';
-
-			return '<li class="viewall"><span>' . $text . '</span></li>';
+			return '<li class="count"><span><span><span class="num-images"><span class="num">' . count(self::$imgs) . '</span><br />' . (true === self::$attachment ? 'Size' : 'Image') . (1 == count(self::$imgs) ? '' : 's') . '</abbr></span><span class="move">Move</span></span></span></li>';
 		}
 
 		public static function heartbeat_footer_js() {
@@ -112,7 +141,7 @@ class css_attachimgs {
 								$("#cpmb-attachimgs div.inside > ul").html('<li class="no-imgs"><h2 class="hndle">No Attached Images</h2></li>');
 
 							if ('function' === typeof HBMonitor)
-								HBMonitor('AIMGS (no imgs)');
+								HBMonitor('No Attached Images');
 
 							return;
 						}
@@ -146,7 +175,7 @@ class css_attachimgs {
 						}
 
 						if ('function' === typeof HBMonitor)
-							HBMonitor('AIMGS (' + (imgs.length - 1) + ' imgs)');
+							HBMonitor('Attached Images: ' + (imgs.length - 1));
 					});
 				}(jQuery));
 			</script>
@@ -164,37 +193,74 @@ class css_attachimgs {
 			$response['css-cpmb-attachimgs'] = 'has-post-id';
 			$post_id = $data['postid_heartbeat'];
 
-			$query = array(
-				'post_type' => 'attachment',
-				'post_mime_type' => 'image',
-				'post_status' => 'any',
-				'posts_per_page' => -1,
-				'post_parent' => $post_id,
-				'orderby' => 'menu_order',
-				'order' => 'asc'
-			);
+			if ('attachment' === get_post_type($post_id)) {
+				self::$attachment = true;
+				$metadata = wp_get_attachment_metadata($post_id);
+				if (array_key_exists('sizes',$metadata) && is_array($metadata['sizes']) && count($metadata['sizes'])) {
+					self::$imgs = array();
+					foreach ($metadata['sizes'] as $size => $array) {
+						$image = new stdClass();
+						$image->width = $array['width'];
+						$image->height = $array['height'];
+						$image->size = $size;
+						$temp = wp_get_attachment_image_src($post_id,$size);
+						$image->src = $temp[0];
+						self::$imgs[] = $image;
+					}
+				}
+			} else {
+				$images = new WP_Query(array(
+					'post_type' => 'attachment',
+					'post_mime_type' => 'image',
+					'post_status' => 'any',
+					'post_parent' => $post_id,
+					'posts_per_page' => -1,
+					'orderby' => 'menu_order',
+					'order' => 'asc',
+				));
+				if ($images->have_posts()) {
+					foreach ($images->posts as $img) {
+						$temp = wp_get_attachment_image_src($img->ID,'thumbnail');
+						$image = new stdClass();
+						$image->width = $temp[1];
+						$image->height = $temp[2];
+						$image->src = $temp[0];
+						$image->id = $img->ID;
+						self::$imgs[] = $image;
+					}
+					self::$coords['all'] = $images->found_posts;
+				}
+			}
 
-			$images = new WP_Query($query);
-
-			if (!$images->have_posts()) {
+			if (false === self::$imgs || !count(self::$imgs)) {
 				$response['css-cpmb-attachimgs'] = 'none';
 				return $response;
 			}
 
-			self::$imgs = $images;
-
 			$responses['css-cpmb-attachimgs'] = 'has-images';
 
 			$return = array(self::num());
-			while ($images->have_posts()) {
-				$images->the_post();
-				$thumb = wp_get_attachment_image_src(get_the_ID(),'thumbnail');
-				$return[] = '<li><a href="' . get_edit_post_link(get_the_ID()) . '" target="_blank"><img src="' . $thumb[0] . '" alt="' . get_the_title() . '" width="' . $thumb[1] . '" height="' . $thumb[2] . '" /></a></li>';
-				if (0 && null != ($temp = self::all())) {
-					$return[] = $temp;
-					unset($temp);
+			if (is_array(self::$imgs) && count(self::$imgs)) {
+				$image_id = $post->ID;
+				foreach (self::$imgs as $img) {
+					if (isset($img->id)) {
+						$image_id = $img->id;
+						$image_link = get_edit_post_link($img->id);
+					}
+					else if (isset($img->size)) {
+						$image = wp_get_attachment_image_src($post->ID,$img->size);
+						$image_link = $image[0];
+					}
+					$return[] = '<li data-orientation="' . ($img->width >= $img->height ? 'landscape' : 'portrait') . '">' .
+						'<a href="' . $image_link . '" target="_blank">' .
+							'<img src="' . $img->src . '" alt="' . get_the_title($image_id) . '" width="' . $img->width . '" height="' . $img->height . '" />' .
+						'</a>' .
+					'</li>';
 				}
-			}
+			} else {
+                $headtag = version_compare($wp_version,'4.4-alpha','>=') ? 'h2 style="font-weight: bold;"' : 'h3';
+                $return[] = '<li class="no-imgs"><' . $headtag . ' class="hndle">No Attached Images</' . $headtag . '></li>';
+            }
 			wp_reset_postdata();
 
 			$response['css-cpmb-attachimgs'] = json_encode($return);
