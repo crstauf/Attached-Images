@@ -115,7 +115,7 @@ class css_attachimgs {
                 $headtag = version_compare($wp_version,'4.4-alpha','>=') ? 'h2 style="font-weight: bold;"' : 'h3';
                 echo '<li class="no-imgs"><' . $headtag . ' class="hndle">No Attached Images</' . $headtag . '></li>';
             }
-		echo '</ul><style type="text/css">#cpmb-attachimgs > .hndle { width: ' . (100 / $cols) . '%; }</style>';
+		echo '</ul>';
 	}
 
 		public static function num() {
