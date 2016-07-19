@@ -112,8 +112,9 @@ class css_attachimgs {
 					'</li>';
 				}
 			} else {
-                $headtag = version_compare($wp_version,'4.4-alpha','>=') ? 'h2 style="font-weight: bold;"' : 'h3';
-                echo '<li class="no-imgs"><' . $headtag . ' class="hndle">No Attached Images</' . $headtag . '></li>';
+                $openheadtag = version_compare($wp_version,'4.4-alpha','>=') ? 'h2 style="font-weight: bold;"' : 'h3';
+				$closeheadtag = version_compare($wp_version,'4.4-alpha','>=') ? 'h2' : 'h3';
+                echo '<li class="no-imgs"><' . $openheadtag . ' class="hndle">No Attached Images<span class="spinner"></span></' . $closeheadtag . '></li>';
             }
 		echo '</ul>';
 	}
@@ -267,8 +268,9 @@ class css_attachimgs {
 					'</li>';
 				}
 			} else {
-                $headtag = version_compare($wp_version,'4.4-alpha','>=') ? 'h2 style="font-weight: bold;"' : 'h3';
-                $return[] = '<li class="no-imgs"><' . $headtag . ' class="hndle">No Attached Images</' . $headtag . '></li>';
+                $openheadtag = version_compare($wp_version,'4.4-alpha','>=') ? 'h2 style="font-weight: bold;"' : 'h3';
+				$closeheadtag = version_compare($wp_version,'4.4-alpha','>=') ? 'h2' : 'h3';
+                $return[] = '<li class="no-imgs"><' . $openheadtag . ' class="hndle">No Attached Images<span class="spinner"></span></' . $closeheadtag . '></li>';
             }
 			wp_reset_postdata();
 
