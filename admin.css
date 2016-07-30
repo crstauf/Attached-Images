@@ -134,7 +134,7 @@
 	}
 
 	#cpmb-attachimgs > div.inside > ul > li.count {
-		height: 100%;
+		height: 0;
 		text-align: center;
 		cursor: default;
 		line-height: normal;
