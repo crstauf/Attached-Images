@@ -251,7 +251,7 @@ class css_attachimgs {
 
 			$return = array(self::num());
 			if (is_array(self::$imgs) && count(self::$imgs)) {
-				$image_id = $post->ID;
+				$image_id = $post_id;
 				foreach (self::$imgs as $img) {
 					if (isset($img->id)) {
 						$image_id = $img->id;
